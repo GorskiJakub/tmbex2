@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">TmbEx2</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string><string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed facilisis tortor et nunc fermentum, non facilisis sapien tincidunt. Nam volutpat convallis posuere. Curabitur iaculis lorem sapien, ut sodales ligula euismod eget. Cras sed elit in tellus tincidunt bibendum sit amet id augue. Nullam lobortis dolor sapien. In facilisis scelerisque magna, ut blandit orci blandit lacinia. Nunc ullamcorper justo ante, ut feugiat eros egestas in. Pellentesque ac fermentum risus.
+
+Maecenas eu quam ut velit sollicitudin malesuada nec consectetur nunc. Suspendisse fermentum varius ex vehicula condimentum. Mauris purus lorem, viverra id hendrerit ut, venenatis nec arcu. Nam ac facilisis erat, vel fringilla metus. Etiam mauris massa, interdum id congue in, faucibus ac orci. Donec et purus ligula. Vestibulum mi leo, fringilla sit amet laoreet a, lobortis nec leo. Etiam ante tortor, imperdiet sodales ante eget, imperdiet vulputate erat. Cras ac lacus eget purus mattis euismod quis vel dolor. Sed accumsan enim ut purus dictum, hendrerit mollis dui placerat.
+
+Integer viverra arcu vitae enim dapibus, et volutpat purus porta. Praesent id sem sagittis, hendrerit mi ac, malesuada enim. Phasellus feugiat nulla vel lorem accumsan, a rutrum enim semper. Quisque vitae lobortis justo. Aliquam iaculis vitae ipsum id facilisis. Phasellus efficitur egestas purus. Sed nec lectus posuere, eleifend ante at, varius erat.
+
+Donec facilisis justo vel bibendum mattis. Cras eget tristique justo, iaculis pharetra lectus. Donec tincidunt euismod dui at tristique. Maecenas molestie mauris ut scelerisque ornare. Integer at maximus purus. Donec vestibulum luctus cursus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris fringilla velit in augue pellentesque, in commodo nulla laoreet. Cras lorem velit, tempor a nibh vel, fringilla luctus leo. Donec eget congue est. Phasellus risus nisi, cursus ac aliquet sed, interdum non dolor. Curabitur non consectetur purus. Aenean congue gravida odio, in scelerisque eros. Proin id neque eu nisl viverra ullamcorper. Praesent bibendum commodo elit, eget malesuada lorem porta a.
+
+Nullam at lectus id nunc sagittis vehicula ut sit amet lorem. Fusce eget maximus lectus. Proin at turpis sit amet dolor rhoncus pulvinar. Maecenas cursus venenatis auctor. Etiam quam dui, sagittis id ligula quis, facilisis vulputate magna. Vivamus vehicula, nisl eu pharetra condimentum, magna quam blandit nisl, ut tincidunt odio diam sit amet lacus. In mollis ante quis dignissim pellentesque. Curabitur nec ipsum in leo suscipit tincidunt eget in neque. Quisque non feugiat sem. Vivamus eu lectus eu neque placerat viverra. Sed consequat orci at rutrum vestibulum.</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_screen_slide_pager">ScreenSlidePagerActivity</string>
+</resources>
