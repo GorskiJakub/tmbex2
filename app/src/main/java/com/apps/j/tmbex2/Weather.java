@@ -44,19 +44,25 @@ public class Weather implements Serializable{
         this.nextDays = nextDays;
     }
 
-    class ShortWeather {
+    class ShortWeather implements Serializable{
         String date;
         String day;
         int high;
         int low;
         String text;
 
+        //pon11-13.15 wtorek10
         ShortWeather(String date, String day, int high, int low, String text) {
             this.date = date;
             this.day = day;
             this.high = high;
             this.low = low;
             this.text = text;
+        }
+
+        @Override
+        public String toString(){
+            return date + " (" + day + "): " + low + "-" + high + " " + text;
         }
     }
 

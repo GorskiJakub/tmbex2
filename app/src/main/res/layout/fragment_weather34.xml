@@ -2,39 +2,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.apps.j.tmbex2.Weather2Fragment"
+    tools:context="com.apps.j.tmbex2.Weather34Fragment"
     android:orientation="vertical">
 
 
     <TextView
-        android:id="@+id/wind_power"
+        android:id="@+id/day1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="wind_power" />
+        android:text="day1" />
     <TextView
-        android:id="@+id/wind_direction"
+        android:id="@+id/day2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="wind_direction" />
+        android:text="day2" />
     <TextView
-        android:id="@+id/humidity"
+        android:id="@+id/day3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="humidity" />
+        android:text="day3" />
     <TextView
-        android:id="@+id/sunrise"
+        android:id="@+id/day4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="sunrise" />
+        android:text="day4" />
     <TextView
-        android:id="@+id/sunset"
+        android:id="@+id/day5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="sunset" />
+        android:text="day5" />
 
 </LinearLayout>

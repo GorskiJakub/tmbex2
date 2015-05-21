@@ -3,15 +3,16 @@ package com.apps.j.tmbex2;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -41,47 +42,65 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class ScreenSlidePagerActivity extends FragmentActivity {
-
-    private static final int NUM_PAGES = 3;
+public class MainActivity extends FragmentActivity implements Weather1Fragment.OnFragmentInteractionListener {
 
     private ViewPager mPager;
 
     private PagerAdapter mPagerAdapter;
+    private boolean VERTICAL;
 
     String city = "";
     Weather weather;
 
+   // Weather1Fragment fragment1;
+  //  Weather2Fragment fragment2;
+   // Weather3Fragment fragment3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_screen_slide);
 
         weather = null;
 
         city = PreferenceManager.getDefaultSharedPreferences(this).getString("city", "Lodz");
 
-        if (((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() == null) {
-            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
-            Weather weather;
-            if ((weather = readFromCache(city)) != null) {
-                //setTextViews(view, weather);
-                Toast.makeText(this, "Read from cache", Toast.LENGTH_SHORT).show();
-            }
-            getActionBar().setTitle(city);
+
+        System.out.println("---------------");
+        setContentView(R.layout.activity_main);
+
+        VERTICAL = !isXLargeTablet();
+        System.out.println("ON CREATE " + VERTICAL);
+
+        if (VERTICAL) {
+
+            mPager = (ViewPager) findViewById(R.id.pager);
+            mPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+            mPager.setAdapter(mPagerAdapter);
+
+        } else {
+     //       fragment1 = ;
+            //      fragment2 = (Weather2Fragment)getSupportFragmentManager().findFragmentById(R.id.fragment2);
+            //      fragment3 = (Weather3Fragment)getSupportFragmentManager().findFragmentById(R.id.fragment3);
         }
-        else {
-            new GetWeather().execute();
 
-        }
+       // System.out.println("fragment1");
+   //     System.out.println(fragment1);
+     //   System.out.println(fragment1.getView());
+        getActionBar().setTitle(city);
+        System.out.println("---------------");
 
-
-        // Instantiate a ViewPager and a PagerAdapter.
-
+        getWeather();
 
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -100,21 +119,20 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_screen_slide_pager, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_refresh:
+                getWeather();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -128,30 +146,56 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         return false;
     }
 
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
+    private void getWeather() {
 
-        @Override
-        public Fragment getItem(int position) {
-            System.out.println("np getItem");
-            switch (position) {
-                case 0:
-                    return Weather1Fragment.newInstance(weather);
-                case 1:
-                    return new Weather2Fragment();
-                default:
-                    return new ScreenSlidePageFragment();
+        if (((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() == null) {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+            if ((weather = readFromCache(city)) != null) {
+                //setTextViews(view, weather);
+                Toast.makeText(this, "Read from cache", Toast.LENGTH_SHORT).show();
             }
         }
+        else {
+            new AsyncTask<String, Void, Void>() {
+                @Override
+                protected Void doInBackground(String... params) {
 
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
+                    try {
+                        weather = retrieveWeather(getJSONfromUrl());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void v) {
+                    try {
+                        saveToCache(weather, city);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println("weather " + weather);
+
+
+                  //  System.out.println(fragment1);
+                //    System.out.println(fragment1.getView());
+                //    System.out.println(fragment2.view);
+                    if (VERTICAL)
+                        ((ViewPagerAdapter)mPagerAdapter).getFragment1().updateContent(weather);
+                    else
+                        ((Weather1Fragment)getSupportFragmentManager().findFragmentById(R.id.fragment1)).updateContent(weather);
+                    //fragment1.updateContent(weather);
+            //        fragment2.updateContent(weather);
+           //         System.out.println(fragment1.view);
+                //    fragment3.updateContent(weather);
+
+                }
+            }.execute();
+
         }
     }
-
 
     private Weather readFromCache(String city) {
         String filename = getExternalCacheDir()+"/"+city+".txt";
@@ -171,7 +215,7 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         return weather;
     }
 
-    private void saveToCache(Object weather, String city) {
+    private void saveToCache(Weather weather, String city) {
         //String filename = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+city+".txt";
         String filename = getExternalCacheDir()+"/"+city+".txt";
         try {
@@ -224,7 +268,7 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             e.printStackTrace();
             return null;
         }
-        System.out.println(jsonStr);
+     //   System.out.println(jsonStr);
         return jsonStr;
     }
 
@@ -232,13 +276,23 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         JSONObject jsonObject = new JSONObject(jsonStr);
         JSONObject channel = jsonObject.getJSONObject("query").getJSONObject("results")
                 .getJSONObject("channel");
-        System.out.println(channel);
+  //      System.out.println(channel);
+        String created = jsonObject.getJSONObject("query").getString("created");
+        String format = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        DateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        Date date = null;
+        try {
+            date = sdf.parse(created);
 
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+   //     System.out.println(date.toString());
         String city = channel.getJSONObject("location").getString("city");
         int code = channel.getJSONObject("item").getJSONObject("condition").getInt("code");
         double lat = channel.getJSONObject("item").getDouble("lat");
         double lng = channel.getJSONObject("item").getDouble("long");
-        String date = channel.getJSONObject("item").getJSONObject("condition").getString("date");
+        String time = channel.getJSONObject("item").getJSONObject("condition").getString("date");
         int temp = channel.getJSONObject("item").getJSONObject("condition").getInt("temp");
         int pressure = channel.getJSONObject("atmosphere").getInt("pressure");
         String description = channel.getJSONObject("item").getString("description");
@@ -254,47 +308,63 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         Type listType = new TypeToken<List<Weather.ShortWeather>>(){}.getType();
         List<Weather.ShortWeather> nextDays = gson.fromJson(forecast.toString(), listType);
 
-        return new Weather(city, code, lat, lng, date, temp, pressure, description, windDirection, windSpeed,
+        return new Weather(city, code, lat, lng, time, temp, pressure, description, windDirection, windSpeed,
                 humidity, visibility, sunrise, sunset, nextDays);
 
+    }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 
 
-    class GetWeather extends AsyncTask<String, Void, Void> {
-        @Override
-        protected Void doInBackground(String... params) {
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
+        public Weather1Fragment fragment1;
+        public Weather2Fragment fragment2;
+        public Weather3Fragment fragment3;
 
-            try {
-                weather = retrieveWeather(getJSONfromUrl());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
+        public Weather1Fragment getFragment1() {
+            return fragment1;
+        }
+
+        public Weather2Fragment getFragment2() {
+            return fragment2;
+        }
+
+        public Weather3Fragment getFragment3() {
+            return fragment3;
+        }
+
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+            fragment1 = new Weather1Fragment();
+            fragment2 = new Weather2Fragment();
+            fragment3 = new Weather3Fragment();
         }
 
         @Override
-        protected void onPostExecute(Void v) {
-            try {
-                getActionBar().setTitle(city);
-                saveToCache(weather, city);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
+        public Fragment getItem(int position) {
+            System.out.println("getItem - "+position);
+            switch (position) {
+                case 0:
+                    return fragment1;
+                case 1:
+                    return fragment2;
+                case 2:
+                    return fragment3;
+                default:
+                    return null;
             }
+        }
 
-            if (!(isXLargeTablet())) {
-                mPager = (ViewPager) findViewById(R.id.pager);
-                mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-                mPager.setAdapter(mPagerAdapter);
-            } else {
-                System.out.println("poziomo albo duzy ekran");
-                setContentView(R.layout.three_fragments);
-
-            }
-
+        @Override
+        public int getCount() {
+            return 3;
         }
     }
+
+
 
 
 }

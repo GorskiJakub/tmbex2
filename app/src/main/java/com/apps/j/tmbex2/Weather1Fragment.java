@@ -17,58 +17,96 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class Weather1Fragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
     Weather weather;
-
-    public static Weather1Fragment newInstance(Weather weather) {
-        Weather1Fragment fragment = new Weather1Fragment(weather);
-        Bundle args = new Bundle();
-  //      args.putString(ARG_PARAM1, param1);
-     //   args.putString(ARG_PARAM2, param2);
-      //  fragment.setArguments(args);
-        return fragment;
-    }
+    char unit = 'a';
+    OnFragmentInteractionListener mListener;
 
     public Weather1Fragment(Weather weather) {
         this.weather = weather;
-        // Required empty public constructor
+    }
+
+
+    public Weather1Fragment() {
+        System.out.println("new Weather1Fragment");
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        unit = (PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("units","f").equals("f") ? 'f' : 'c');
+
+        System.out.println("onCreate1");
+    }
+
+    @Override
+    public void onActivityCreated (Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        System.out.println("onActivityCreated1");
+    }
+
+    @Override
+    public void onStart () {
+        super.onStart();
+        System.out.println("onStart1 "+getView());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        char unit = (PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("units","f").equals("f") ? 'f' : 'c');
+
 
         //https://github.com/pwittchen/WeatherIconView <3
-        View view = inflater.inflate(R.layout.fragment_weather1, container, false);
-        ((TextView) view.findViewById(R.id.city)).setText(weather.city);
-        ((TextView) view.findViewById(R.id.latlng)).setText(weather.lat+", "+weather.lng);
-        ((TextView) view.findViewById(R.id.time)).setText(weather.time);
-        ((TextView) view.findViewById(R.id.temp)).setText(Integer.toString(weather.temp) + (unit=='f' ? "F" : "°C"));
-        ((TextView) view.findViewById(R.id.humidity)).setText(Integer.toString(weather.humidity) + "%");
+      //  System.out.println("unit "+unit);
+        //System.out.println("onCreateView1 "+getView());
+        return inflater.inflate(R.layout.fragment_weather1, container, false);
+    }
 
-        Document doc = Jsoup.parse(weather.description);
-        ((TextView) view.findViewById(R.id.description)).setText(doc.text());
-        String icon = setWeatherIcon(weather.code);
-        System.out.println(weather.code+" "+icon);
-        int resID = getResources().getIdentifier(""+icon, "string", getActivity().getPackageName());
-        ((WeatherIconView) view.findViewById(R.id.my_weather_icon)).setIconResource(getString(resID));
-        return view;
+   public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+  }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public void updateContent(Weather weather) {
+        System.out.println("updateContent1 "+getView());
+        this.weather = weather;
+        updateView();
+    }
+
+    public void updateView() {
+        if (weather!=null) {
+            System.out.println("view1 " + getView());
+            ((TextView) getView().findViewById(R.id.city)).setText(weather.city);
+            ((TextView) getView().findViewById(R.id.latlng)).setText(weather.lat + ", " + weather.lng);
+            ((TextView) getView().findViewById(R.id.time)).setText(weather.time);
+            ((TextView) getView().findViewById(R.id.temp)).setText(Integer.toString(weather.temp) + (unit == 'f' ? "F" : "°C"));
+            ((TextView) getView().findViewById(R.id.humidity)).setText(Integer.toString(weather.humidity) + "%");
+
+            Document doc = Jsoup.parse(weather.description);
+            ((TextView) getView().findViewById(R.id.description)).setText(doc.text());
+            String icon = setWeatherIcon(weather.code);
+          //  System.out.println(weather.code + " " + icon);
+            int resID = getResources().getIdentifier("" + icon, "string", getActivity().getPackageName());
+            ((WeatherIconView) getView().findViewById(R.id.my_weather_icon)).setIconResource(getString(resID));
+        }
     }
 
     //https://gist.github.com/aloncarmel/8575527 <3
@@ -125,6 +163,12 @@ public class Weather1Fragment extends Fragment {
             case 3200: return  "wi_cloud";
             default: return  "wi_cloud";
         }
+    }
+
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        public void onFragmentInteraction(Uri uri);
     }
 
 }
