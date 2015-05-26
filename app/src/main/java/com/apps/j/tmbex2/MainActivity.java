@@ -49,7 +49,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends FragmentActivity implements Weather1Fragment.OnFragmentInteractionListener {
+public class MainActivity extends FragmentActivity {
 
     private ViewPager mPager;
 
@@ -59,10 +59,6 @@ public class MainActivity extends FragmentActivity implements Weather1Fragment.O
     String city = "";
     Weather weather;
 
-   // Weather1Fragment fragment1;
-  //  Weather2Fragment fragment2;
-   // Weather3Fragment fragment3;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,33 +67,18 @@ public class MainActivity extends FragmentActivity implements Weather1Fragment.O
 
         city = PreferenceManager.getDefaultSharedPreferences(this).getString("city", "Lodz");
 
-
-        System.out.println("---------------");
         setContentView(R.layout.activity_main);
 
         VERTICAL = !isXLargeTablet();
-        System.out.println("ON CREATE " + VERTICAL);
 
         if (VERTICAL) {
 
             mPager = (ViewPager) findViewById(R.id.pager);
             mPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
             mPager.setAdapter(mPagerAdapter);
-
-        } else {
-     //       fragment1 = ;
-            //      fragment2 = (Weather2Fragment)getSupportFragmentManager().findFragmentById(R.id.fragment2);
-            //      fragment3 = (Weather3Fragment)getSupportFragmentManager().findFragmentById(R.id.fragment3);
         }
-
-       // System.out.println("fragment1");
-   //     System.out.println(fragment1);
-     //   System.out.println(fragment1.getView());
         getActionBar().setTitle(city);
-        System.out.println("---------------");
-
         getWeather();
-
     }
 
 
@@ -175,21 +156,17 @@ public class MainActivity extends FragmentActivity implements Weather1Fragment.O
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
-
-                    System.out.println("weather " + weather);
-
-
-                  //  System.out.println(fragment1);
-                //    System.out.println(fragment1.getView());
-                //    System.out.println(fragment2.view);
-                    if (VERTICAL)
-                        ((ViewPagerAdapter)mPagerAdapter).getFragment1().updateContent(weather);
-                    else
-                        ((Weather1Fragment)getSupportFragmentManager().findFragmentById(R.id.fragment1)).updateContent(weather);
-                    //fragment1.updateContent(weather);
-            //        fragment2.updateContent(weather);
-           //         System.out.println(fragment1.view);
-                //    fragment3.updateContent(weather);
+                    System.out.println(weather);
+                    if (VERTICAL) {
+                        ((Weather1Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":0")).updateContent(weather);
+                     //   ((Weather2Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":1")).updateContent(weather);
+                        ((Weather2Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":1")).updateView();
+                    }
+                    else {
+                        ((Weather1Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment1)).updateContent(weather);
+                        ((Weather2Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment2)).updateContent(weather);
+                        ((Weather3Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment3)).updateContent(weather);
+                    }
 
                 }
             }.execute();
@@ -268,7 +245,6 @@ public class MainActivity extends FragmentActivity implements Weather1Fragment.O
             e.printStackTrace();
             return null;
         }
-     //   System.out.println(jsonStr);
         return jsonStr;
     }
 
@@ -276,7 +252,6 @@ public class MainActivity extends FragmentActivity implements Weather1Fragment.O
         JSONObject jsonObject = new JSONObject(jsonStr);
         JSONObject channel = jsonObject.getJSONObject("query").getJSONObject("results")
                 .getJSONObject("channel");
-  //      System.out.println(channel);
         String created = jsonObject.getJSONObject("query").getString("created");
         String format = "yyyy-MM-dd'T'HH:mm:ss'Z'";
         DateFormat sdf = new SimpleDateFormat(format, Locale.US);
@@ -313,46 +288,21 @@ public class MainActivity extends FragmentActivity implements Weather1Fragment.O
 
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-
     private class ViewPagerAdapter extends FragmentPagerAdapter {
-        public Weather1Fragment fragment1;
-        public Weather2Fragment fragment2;
-        public Weather3Fragment fragment3;
-
-        public Weather1Fragment getFragment1() {
-            return fragment1;
-        }
-
-        public Weather2Fragment getFragment2() {
-            return fragment2;
-        }
-
-        public Weather3Fragment getFragment3() {
-            return fragment3;
-        }
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            fragment1 = new Weather1Fragment();
-            fragment2 = new Weather2Fragment();
-            fragment3 = new Weather3Fragment();
         }
 
         @Override
         public Fragment getItem(int position) {
-            System.out.println("getItem - "+position);
             switch (position) {
                 case 0:
-                    return fragment1;
+                    return new Weather1Fragment();
                 case 1:
-                    return fragment2;
+                    return new Weather2Fragment();
                 case 2:
-                    return fragment3;
+                    return new Weather2Fragment();
                 default:
                     return null;
             }

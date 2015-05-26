@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 public class Weather2Fragment extends Fragment {
     Weather weather;
-    View view;
 
     public Weather2Fragment(Weather weather) {
         this.weather = weather;
@@ -23,9 +22,7 @@ public class Weather2Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-      //  System.out.println("onCreateView2");
-        view = inflater.inflate(R.layout.fragment_weather2, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_weather2, container, false);
     }
 
     public void updateContent(Weather weather) {
@@ -34,13 +31,12 @@ public class Weather2Fragment extends Fragment {
     }
 
     public void updateView() {
-  //      System.out.println("view2 "+view);
         if (weather!=null) {
-            ((TextView) view.findViewById(R.id.wind_power)).setText(Integer.toString(weather.windSpeed));
-            ((TextView) view.findViewById(R.id.wind_direction)).setText(Integer.toString(weather.windDirection)+"°");
-            ((TextView) view.findViewById(R.id.humidity)).setText(Integer.toString(weather.humidity)+"%");
-            ((TextView) view.findViewById(R.id.sunrise)).setText(weather.sunrise);
-            ((TextView) view.findViewById(R.id.sunset)).setText(weather.sunset);
+            ((TextView) getView().findViewById(R.id.wind_power)).setText(Integer.toString(weather.windSpeed));
+            ((TextView) getView().findViewById(R.id.wind_direction)).setText(Integer.toString(weather.windDirection)+"°");
+            ((TextView) getView().findViewById(R.id.humidity)).setText(Integer.toString(weather.humidity)+"%");
+            ((TextView) getView().findViewById(R.id.sunrise)).setText(weather.sunrise);
+            ((TextView) getView().findViewById(R.id.sunset)).setText(weather.sunset);
         }
     }
 
