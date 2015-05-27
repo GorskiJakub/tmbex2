@@ -27,16 +27,17 @@ public class Weather2Fragment extends Fragment {
 
     public void updateContent(Weather weather) {
         this.weather = weather;
+      //  System.out.println("view2 "+getView());
         updateView();
     }
 
     public void updateView() {
         if (weather!=null) {
-            ((TextView) getView().findViewById(R.id.wind_power)).setText(Integer.toString(weather.windSpeed));
-            ((TextView) getView().findViewById(R.id.wind_direction)).setText(Integer.toString(weather.windDirection)+"°");
-            ((TextView) getView().findViewById(R.id.humidity)).setText(Integer.toString(weather.humidity)+"%");
-            ((TextView) getView().findViewById(R.id.sunrise)).setText(weather.sunrise);
-            ((TextView) getView().findViewById(R.id.sunset)).setText(weather.sunset);
+            ((TextView) getView().findViewById(R.id.wind_power)).setText("wind - " + Integer.toString(weather.windSpeed));
+            ((TextView) getView().findViewById(R.id.wind_direction)).setText("wind - " + Integer.toString(weather.windDirection)+"°");
+            ((TextView) getView().findViewById(R.id.humidity)).setText("humidity - " + Integer.toString(weather.humidity)+"%");
+            ((TextView) getView().findViewById(R.id.sunrise)).setText("sunrise - " + weather.sunrise);
+            ((TextView) getView().findViewById(R.id.sunset)).setText("sunset - " + weather.sunset);
         }
     }
 

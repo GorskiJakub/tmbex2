@@ -27,6 +27,7 @@ public class Weather3Fragment extends Fragment {
 
     public void updateContent(Weather weather) {
         this.weather = weather;
+      //  System.out.println("view3 " + getView());
         updateView();
     }
 

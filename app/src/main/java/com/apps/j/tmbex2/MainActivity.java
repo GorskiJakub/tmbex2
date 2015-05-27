@@ -7,16 +7,20 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -45,9 +49,13 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends FragmentActivity {
 
@@ -59,11 +67,14 @@ public class MainActivity extends FragmentActivity {
     String city = "";
     Weather weather;
 
+    HashMap<Fragment,Boolean> fragments;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        weather = null;
+        fragments = new HashMap<>();
         super.onCreate(savedInstanceState);
 
-        weather = null;
 
         city = PreferenceManager.getDefaultSharedPreferences(this).getString("city", "Lodz");
 
@@ -73,15 +84,26 @@ public class MainActivity extends FragmentActivity {
 
         if (VERTICAL) {
 
-            mPager = (ViewPager) findViewById(R.id.pager);
+            mPager = (ViewPager) findViewById(R.id.vPager);
             mPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+            mPager.setOffscreenPageLimit(3);
             mPager.setAdapter(mPagerAdapter);
+
         }
         getActionBar().setTitle(city);
         getWeather();
+
+    };
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        System.out.println(fragments);
+        if (fragment != null) {
+            System.out.println("onattach " + fragment);
+            fragments.put(fragment, false);
+            System.out.println(fragments);
+        }
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -137,7 +159,7 @@ public class MainActivity extends FragmentActivity {
             }
         }
         else {
-            new AsyncTask<String, Void, Void>() {
+            AsyncTask<String, Void, Void> execute = new AsyncTask<String, Void, Void>() {
                 @Override
                 protected Void doInBackground(String... params) {
 
@@ -156,13 +178,27 @@ public class MainActivity extends FragmentActivity {
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(weather);
+                 //   System.out.println(weather);
                     if (VERTICAL) {
-                        ((Weather1Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":0")).updateContent(weather);
-                     //   ((Weather2Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":1")).updateContent(weather);
-                        ((Weather2Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":1")).updateView();
-                    }
-                    else {
+    //                    if (((ViewPagerAdapter)mPagerAdapter).getFragment1() != null) ((ViewPagerAdapter)mPagerAdapter).getFragment1().updateContent(weather);
+  //                      if (((ViewPagerAdapter)mPagerAdapter).getFragment2() != null) ((ViewPagerAdapter)mPagerAdapter).getFragment2().updateContent(weather);
+//                        if (((ViewPagerAdapter)mPagerAdapter).getFragment3() != null) ((ViewPagerAdapter)mPagerAdapter).getFragment3().updateContent(weather);
+             //           System.out.println("fragment1 - "+((ViewPagerAdapter)mPagerAdapter).getFragment1());
+               //         System.out.println("fragment2 - "+((ViewPagerAdapter)mPagerAdapter).getFragment2());
+                 //       System.out.println("fragment3 - " + ((ViewPagerAdapter) mPagerAdapter).getFragment3());
+                     //   mPagerAdapter.updateFragments(weather);
+               //         ((ViewPagerAdapter)mPagerAdapter).getFragment1().updateContent(weather);
+                 //       ((ViewPagerAdapter)mPagerAdapter).getFragment2().updateContent(weather);
+                   //     ((ViewPagerAdapter)mPagerAdapter).getFragment3().updateContent(weather);
+                        updateFragments();
+                        /*
+                        ((ViewPagerAdapter)mPagerAdapter).getFragment1().updateContent(weather);
+                        ((ViewPagerAdapter)mPagerAdapter).getFragment2().updateContent(weather);
+                        ((ViewPagerAdapter)mPagerAdapter).getFragment3().updateContent(weather);*/
+                        // ((Weather1Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":0")).updateContent(weather);
+                        //((Weather2Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":1")).updateContent(weather);
+                        //     ((Weather2Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":2")).updateView();
+                    } else {
                         ((Weather1Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment1)).updateContent(weather);
                         ((Weather2Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment2)).updateContent(weather);
                         ((Weather3Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment3)).updateContent(weather);
@@ -213,7 +249,7 @@ public class MainActivity extends FragmentActivity {
         final String url = "https://query.yahooapis.com/v1/public/yql?q=" +
                 "select%20*%20from%20weather.forecast%20where%20woeid%20in%20(" +
                 "select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" +
-                city + "%2C%20" + country +
+                city.replaceAll(" ", "%20") + "%2C%20" + country.replaceAll(" ", "%20") +
                 "%22)and%20u%3D%22" + units + "%22&format=json&env=store%3A%2F%2F" +
                 "datatables.org%2Falltableswithkeys";
 
@@ -262,7 +298,6 @@ public class MainActivity extends FragmentActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-   //     System.out.println(date.toString());
         String city = channel.getJSONObject("location").getString("city");
         int code = channel.getJSONObject("item").getJSONObject("condition").getInt("code");
         double lat = channel.getJSONObject("item").getDouble("lat");
@@ -270,7 +305,7 @@ public class MainActivity extends FragmentActivity {
         String time = channel.getJSONObject("item").getJSONObject("condition").getString("date");
         int temp = channel.getJSONObject("item").getJSONObject("condition").getInt("temp");
         int pressure = channel.getJSONObject("atmosphere").getInt("pressure");
-        String description = channel.getJSONObject("item").getString("description");
+        String description = channel.getJSONObject("item").getJSONObject("condition").getString("text");
         int windDirection = channel.getJSONObject("wind").getInt("direction");
         int windSpeed = channel.getJSONObject("wind").getInt("speed");
         int humidity = channel.getJSONObject("atmosphere").getInt("humidity");
@@ -288,6 +323,30 @@ public class MainActivity extends FragmentActivity {
 
     }
 
+    private void updateFragments () {
+        System.out.println("updateFragments "+fragments);
+        /*Iterator iterator = fragments.keySet().iterator();
+        while (iterator.hasNext()) {
+            HashMap.Entry pair = (HashMap.Entry)iterator.next();
+            updateFragment((Fragment)pair.getKey());
+        }*/
+        for (Map.Entry<Fragment, Boolean> entry: fragments.entrySet())
+            updateFragment(entry.getKey());
+    }
+
+    private void updateFragment (Fragment fragment) {
+        if (fragment instanceof Weather1Fragment) {
+            ((Weather1Fragment) fragment).updateContent(weather);
+            fragments.put(fragment, true);
+        } else if (fragment instanceof Weather2Fragment) {
+            ((Weather2Fragment) fragment).updateContent(weather);
+            fragments.put(fragment, true);
+        } else if (fragment instanceof Weather3Fragment) {
+            ((Weather3Fragment) fragment).updateContent(weather);
+            fragments.put(fragment, true);
+        }
+    }
+
     private class ViewPagerAdapter extends FragmentPagerAdapter {
 
         public ViewPagerAdapter(FragmentManager fm) {
@@ -302,16 +361,20 @@ public class MainActivity extends FragmentActivity {
                 case 1:
                     return new Weather2Fragment();
                 case 2:
-                    return new Weather2Fragment();
+                    return new Weather3Fragment();
                 default:
                     return null;
             }
         }
 
+
         @Override
         public int getCount() {
             return 3;
         }
+
+
+
     }
 
 
