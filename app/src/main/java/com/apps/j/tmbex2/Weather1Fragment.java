@@ -1,18 +1,13 @@
 package com.apps.j.tmbex2;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.pwittchen.weathericonview.library.WeatherIconView;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -35,12 +30,9 @@ public class Weather1Fragment extends Fragment {
     }
 
     @Override
+    //wyświetlenie layoutu dla fragmentu
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-
-        //https://github.com/pwittchen/WeatherIconView <3
         return inflater.inflate(R.layout.fragment_weather1, container, false);
     }
 
@@ -55,7 +47,6 @@ public class Weather1Fragment extends Fragment {
             ((TextView) getView().findViewById(R.id.latlng)).setText(weather.lat + ", " + weather.lng);
             ((TextView) getView().findViewById(R.id.time)).setText(weather.time);
             ((TextView) getView().findViewById(R.id.temp)).setText(Integer.toString(weather.temp) + (unit == 'f' ? "F" : "°C"));
-            ((TextView) getView().findViewById(R.id.humidity)).setText(Integer.toString(weather.humidity) + "%");
 
             Document doc = Jsoup.parse(weather.description);
             ((TextView) getView().findViewById(R.id.description)).setText(doc.text());
@@ -65,7 +56,7 @@ public class Weather1Fragment extends Fragment {
         }
     }
 
-    //https://gist.github.com/aloncarmel/8575527 <3
+    //icony do wyświetlania
     private String setWeatherIcon(int code) {
         switch(code) {
             case 0: return "wi_tornado";

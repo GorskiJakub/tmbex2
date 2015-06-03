@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TmbEx2.iml" filepath="$PROJECT_DIR$/TmbEx2.iml" />
       <module fileurl="file://$PROJECT_DIR$/WeatherIconView-library/WeatherIconView-library.iml" filepath="$PROJECT_DIR$/WeatherIconView-library/WeatherIconView-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tmbex2.iml" filepath="$PROJECT_DIR$/tmbex2.iml" />
     </modules>
   </component>
 </project>

@@ -6,13 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.apps.j.tmbex2.R;
 
 public class Weather3Fragment extends Fragment {
 
     Weather weather;
 
     public Weather3Fragment() {
-        // Required empty public constructor
     }
 
     public Weather3Fragment(Weather weather) {
@@ -27,7 +27,6 @@ public class Weather3Fragment extends Fragment {
 
     public void updateContent(Weather weather) {
         this.weather = weather;
-      //  System.out.println("view3 " + getView());
         updateView();
     }
 

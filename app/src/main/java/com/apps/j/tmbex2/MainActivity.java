@@ -4,23 +4,17 @@ package com.apps.j.tmbex2;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -49,10 +43,8 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -67,7 +59,7 @@ public class MainActivity extends FragmentActivity {
     String city = "";
     Weather weather;
 
-    HashMap<Fragment,Boolean> fragments;
+    HashMap<Fragment,Boolean> fragments; //prosty związek klucz-wartość
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,25 +100,24 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         if (mPager.getCurrentItem() == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
+            // Jeśli użytkownik nie przesunął się jeszcze do innych stron i jest to pierwsza jaką przegląda,
+            // to po wciśnięciu Back zostanie wywołane finish().
             super.onBackPressed();
         } else {
-            // Otherwise, select the previous step.
+            // Jeśli  ma historie, cofa do poprzedniej strony.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Rozkłada menu; Dodaje opcje do rozwijanego menu.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
+    //Funkcja odpowiadając za obsługę przycisków odśwież i ustawienia.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
@@ -148,13 +139,12 @@ public class MainActivity extends FragmentActivity {
             return true;
         return false;
     }
-
+    //parsowanie
     private void getWeather() {
 
         if (((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() == null) {
             Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
             if ((weather = readFromCache(city)) != null) {
-                //setTextViews(view, weather);
                 Toast.makeText(this, "Read from cache", Toast.LENGTH_SHORT).show();
             }
         }
@@ -178,26 +168,9 @@ public class MainActivity extends FragmentActivity {
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
-                 //   System.out.println(weather);
-                    if (VERTICAL) {
-    //                    if (((ViewPagerAdapter)mPagerAdapter).getFragment1() != null) ((ViewPagerAdapter)mPagerAdapter).getFragment1().updateContent(weather);
-  //                      if (((ViewPagerAdapter)mPagerAdapter).getFragment2() != null) ((ViewPagerAdapter)mPagerAdapter).getFragment2().updateContent(weather);
-//                        if (((ViewPagerAdapter)mPagerAdapter).getFragment3() != null) ((ViewPagerAdapter)mPagerAdapter).getFragment3().updateContent(weather);
-             //           System.out.println("fragment1 - "+((ViewPagerAdapter)mPagerAdapter).getFragment1());
-               //         System.out.println("fragment2 - "+((ViewPagerAdapter)mPagerAdapter).getFragment2());
-                 //       System.out.println("fragment3 - " + ((ViewPagerAdapter) mPagerAdapter).getFragment3());
-                     //   mPagerAdapter.updateFragments(weather);
-               //         ((ViewPagerAdapter)mPagerAdapter).getFragment1().updateContent(weather);
-                 //       ((ViewPagerAdapter)mPagerAdapter).getFragment2().updateContent(weather);
-                   //     ((ViewPagerAdapter)mPagerAdapter).getFragment3().updateContent(weather);
+                    if (VERTICAL)
+                    {
                         updateFragments();
-                        /*
-                        ((ViewPagerAdapter)mPagerAdapter).getFragment1().updateContent(weather);
-                        ((ViewPagerAdapter)mPagerAdapter).getFragment2().updateContent(weather);
-                        ((ViewPagerAdapter)mPagerAdapter).getFragment3().updateContent(weather);*/
-                        // ((Weather1Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":0")).updateContent(weather);
-                        //((Weather2Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":1")).updateContent(weather);
-                        //     ((Weather2Fragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + mPager.getId() + ":2")).updateView();
                     } else {
                         ((Weather1Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment1)).updateContent(weather);
                         ((Weather2Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment2)).updateContent(weather);
@@ -214,7 +187,7 @@ public class MainActivity extends FragmentActivity {
         String filename = getExternalCacheDir()+"/"+city+".txt";
         Weather weather = null;
         if (!((new File(filename)).exists())) {
-            Toast.makeText(this, "No cached data for " + city, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No data for " + city, Toast.LENGTH_SHORT).show();
         } else {
             try {
                 ObjectInputStream input = new ObjectInputStream(new FileInputStream(new File(filename)));
@@ -222,14 +195,13 @@ public class MainActivity extends FragmentActivity {
                 System.out.println("read " + weather);
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(this, "No cached data for " + city, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No data for " + city, Toast.LENGTH_SHORT).show();
             }
         }
         return weather;
     }
 
     private void saveToCache(Weather weather, String city) {
-        //String filename = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+city+".txt";
         String filename = getExternalCacheDir()+"/"+city+".txt";
         try {
             ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(filename)));
@@ -237,7 +209,7 @@ public class MainActivity extends FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Toast.makeText(this, "Saved to cache as "+filename, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Saved to cache"+filename, Toast.LENGTH_SHORT).show();
     }
 
     private String getJSONfromUrl() {
@@ -257,6 +229,7 @@ public class MainActivity extends FragmentActivity {
 
         InputStream is = null;
         String jsonStr = "";
+        //pobranie url
         try {
 
             DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -283,7 +256,7 @@ public class MainActivity extends FragmentActivity {
         }
         return jsonStr;
     }
-
+    //zapisywanie danych pogodowych do konkretnych pól
     private Weather retrieveWeather (String jsonStr) throws JSONException {
         JSONObject jsonObject = new JSONObject(jsonStr);
         JSONObject channel = jsonObject.getJSONObject("query").getJSONObject("results")
@@ -299,37 +272,35 @@ public class MainActivity extends FragmentActivity {
             e.printStackTrace();
         }
         String city = channel.getJSONObject("location").getString("city");
-        int code = channel.getJSONObject("item").getJSONObject("condition").getInt("code");
-        double lat = channel.getJSONObject("item").getDouble("lat");
-        double lng = channel.getJSONObject("item").getDouble("long");
         String time = channel.getJSONObject("item").getJSONObject("condition").getString("date");
+        String description = channel.getJSONObject("item").getJSONObject("condition").getString("text");
+        String sunrise = channel.getJSONObject("astronomy").getString("sunrise");
+        String sunset = channel.getJSONObject("astronomy").getString("sunset");
+
+        int code = channel.getJSONObject("item").getJSONObject("condition").getInt("code");
         int temp = channel.getJSONObject("item").getJSONObject("condition").getInt("temp");
         int pressure = channel.getJSONObject("atmosphere").getInt("pressure");
-        String description = channel.getJSONObject("item").getJSONObject("condition").getString("text");
         int windDirection = channel.getJSONObject("wind").getInt("direction");
         int windSpeed = channel.getJSONObject("wind").getInt("speed");
         int humidity = channel.getJSONObject("atmosphere").getInt("humidity");
+
+        double lat = channel.getJSONObject("item").getDouble("lat");
+        double lng = channel.getJSONObject("item").getDouble("long");
         double visibility = channel.getJSONObject("atmosphere").getDouble("visibility");
-        String sunrise = channel.getJSONObject("astronomy").getString("sunrise");
-        String sunset = channel.getJSONObject("astronomy").getString("sunset");
+
 
         Gson gson = new Gson();
         JSONArray forecast = channel.getJSONObject("item").getJSONArray("forecast");
         Type listType = new TypeToken<List<Weather.ShortWeather>>(){}.getType();
         List<Weather.ShortWeather> nextDays = gson.fromJson(forecast.toString(), listType);
 
-        return new Weather(city, code, lat, lng, time, temp, pressure, description, windDirection, windSpeed,
-                humidity, visibility, sunrise, sunset, nextDays);
+        return new Weather(city, time, description, sunrise, sunset, code, temp, pressure, windDirection, windSpeed,
+                humidity, lat, lng,visibility, nextDays);
 
     }
 
     private void updateFragments () {
-        System.out.println("updateFragments "+fragments);
-        /*Iterator iterator = fragments.keySet().iterator();
-        while (iterator.hasNext()) {
-            HashMap.Entry pair = (HashMap.Entry)iterator.next();
-            updateFragment((Fragment)pair.getKey());
-        }*/
+        System.out.println("fragments update "+fragments);
         for (Map.Entry<Fragment, Boolean> entry: fragments.entrySet())
             updateFragment(entry.getKey());
     }
@@ -346,7 +317,7 @@ public class MainActivity extends FragmentActivity {
             fragments.put(fragment, true);
         }
     }
-
+    //klasa odpowiedzialna za ustawienia Pager'a
     private class ViewPagerAdapter extends FragmentPagerAdapter {
 
         public ViewPagerAdapter(FragmentManager fm) {
@@ -366,7 +337,6 @@ public class MainActivity extends FragmentActivity {
                     return null;
             }
         }
-
 
         @Override
         public int getCount() {

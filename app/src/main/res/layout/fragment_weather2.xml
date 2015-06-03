@@ -3,38 +3,64 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.apps.j.tmbex2.Weather2Fragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:id="@+id/fragment_weather2.xml">
 
+
+    <TextView
+        android:id="@+id/humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="humidity"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="0.05"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/visibility"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="visibility"
+        android:layout_weight="0.05"
+        android:layout_marginLeft="20dp" />
+
+    <TextView
+        android:id="@+id/wind_direction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="wind_direction"
+        android:layout_weight="0.05"
+        android:layout_marginLeft="20dp" />
 
     <TextView
         android:id="@+id/wind_power"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="wind_power" />
-    <TextView
-        android:id="@+id/wind_direction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="wind_direction" />
-    <TextView
-        android:id="@+id/humidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="humidity" />
-    <TextView
-        android:id="@+id/sunrise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="sunrise" />
+        android:text="wind_power"
+        android:layout_weight="0.05"
+        android:layout_marginLeft="20dp" />
+
     <TextView
         android:id="@+id/sunset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="sunset" />
+        android:text="sunset"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="0.05" />
+
+    <TextView
+        android:id="@+id/sunrise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="sunrise"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="0.05" />
 
 </LinearLayout>

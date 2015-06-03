@@ -14,7 +14,11 @@
         custom:weatherIconResource="@string/wi_day_sunny"
         custom:weatherIconColor="@android:color/black"
         custom:weatherIconSize="50"
-        android:layout_margin="@dimen/activity_vertical_margin" />
+        android:layout_gravity="right"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="46dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,10 +27,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="city"
         android:id="@+id/city"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/activity_vertical_margin"/>
+        android:layout_alignTop="@+id/my_weather_icon"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="35dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,18 +37,28 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="latlng"
         android:id="@+id/latlng"
+        android:layout_marginTop="27dp"
         android:layout_below="@+id/city"
-        android:layout_alignEnd="@+id/city"
-        android:layout_margin="@dimen/activity_vertical_margin"/>
+        android:layout_alignStart="@+id/city" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="time"
         android:id="@+id/time"
-        android:layout_below="@+id/latlng"
-        android:layout_alignEnd="@+id/latlng"
-        android:layout_margin="@dimen/activity_vertical_margin"/>
+        android:layout_marginBottom="44dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="description"
+        android:id="@+id/description"
+        android:layout_alignBottom="@+id/latlng"
+        android:layout_toStartOf="@+id/my_weather_icon" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -53,31 +66,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="temp"
         android:id="@+id/temp"
-        android:layout_below="@+id/my_weather_icon"
-        android:layout_margin="@dimen/activity_vertical_margin"/>
+        android:textSize="30dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="humidity"
-        android:id="@+id/humidity"
-        android:layout_below="@+id/temp"
-        android:layout_margin="@dimen/activity_vertical_margin"/>
-
-
-
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/humidity" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="description"
-            android:id="@+id/description" />
-    </ScrollView>
 </RelativeLayout>
